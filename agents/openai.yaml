@@ -1,0 +1,7 @@
+interface:
+  display_name: "Nihaisha Nishi Skills"
+  short_description: "把倪海厦课程和本地 E 盘资料库整理成白话入口、课程模块、六经方证、针灸本草、截图证据和资源索引。"
+  default_prompt: "Use $nihaisha to 按倪海厦课程资料回答：先判断用户入口和课程模块，再做白话分水岭、六经/方证/穴位/药性梳理、逐课复习、截图证据或本地资源检索，并保持高风险安全提醒和版权边界。"
+
+policy:
+  allow_implicit_invocation: true
