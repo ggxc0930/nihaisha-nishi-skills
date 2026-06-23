@@ -62,6 +62,22 @@ python scripts/build_distilled_reference.py --input-dir "D:/nihaisha-distillatio
 | 视频/音频 | 先做文件索引；后续用转写模型和关键帧抽取。 |
 | 软件/压缩包 | 只做元数据，不进入公开 Skill。 |
 
+## 视频/音频预处理
+
+安装或定位 `ffmpeg.exe` 和 `ffprobe.exe` 后，可先把视频/音频处理成转写用音频和关键帧：
+
+```powershell
+python scripts/process_media_assets.py `
+  --queue "D:\nihaisha-distillation\distillation-output\media-transcription-queue.jsonl" `
+  --output-dir "D:\nihaisha-distillation\distillation-output\media-distillation" `
+  --ffmpeg "D:\path\to\ffmpeg.exe" `
+  --ffprobe "D:\path\to\ffprobe.exe" `
+  --audio `
+  --keyframes
+```
+
+该步骤不会完成语音转文字；它只生成后续转写模型需要的低码率音频和用于人工/视觉筛选的关键帧。
+
 ## 发布边界
 
 - 不把本地原始大文件直接提交到 Git。

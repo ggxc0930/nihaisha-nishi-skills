@@ -7,6 +7,7 @@ import argparse
 import json
 from pathlib import Path
 import re
+from datetime import datetime
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -87,6 +88,8 @@ def main() -> int:
     parser.add_argument("--top-dir", help="Only process files under this top-level directory.")
     parser.add_argument("--max-pdf-pages", type=int, default=80)
     parser.add_argument("--max-xlsx-rows", type=int, default=500)
+    parser.add_argument("--skip-existing", action="store_true", help="Skip files whose extracted output already exists.")
+    parser.add_argument("--report", type=Path, help="Report JSONL path. Defaults to a timestamped file under the output parent.")
     args = parser.parse_args()
 
     if not args.plan.exists():
@@ -96,7 +99,12 @@ def main() -> int:
     skipped = 0
     errors = 0
     args.output_dir.mkdir(parents=True, exist_ok=True)
-    report_path = args.output_dir.parent / "extract-report.jsonl"
+    if args.report:
+        report_path = args.report
+    else:
+        stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+        suffix = re.sub(r"[^\w.-]+", "_", args.top_dir or "all", flags=re.UNICODE)
+        report_path = args.output_dir.parent / f"extract-report-{suffix}-{stamp}.jsonl"
 
     with args.plan.open("r", encoding="utf-8") as plan, report_path.open("w", encoding="utf-8", newline="\n") as report:
         for line in plan:
@@ -110,6 +118,10 @@ def main() -> int:
             source = Path(str(item["path"]))
             rel = str(item["relative_path"])
             target = output_path(args.output_dir, rel)
+            if args.skip_existing and target.exists():
+                skipped += 1
+                report.write(json.dumps({"status": "exists", "relative_path": rel, "target": str(target)}, ensure_ascii=False) + "\n")
+                continue
             try:
                 ext = str(item.get("extension", "")).lower()
                 if ext == ".pdf":
