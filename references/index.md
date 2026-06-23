@@ -135,6 +135,7 @@
 
 - 本地资料库问题：如果本机已生成 `local-resource-inventory.md`，先打开它看总体覆盖；需要定位文件时运行 `python scripts/search_local_resources.py <关键词>`。公开仓库默认只保留 `local-resource-inventory.example.md`，不提交用户本机路径、文件名或完整资源清单。
 - 全量蒸馏问题：打开 `full-distillation-workflow.md`，按索引、计划、文本抽取、草稿生成、人工复核的顺序处理；批处理输出保存在 `distillation-output/`，默认不提交。
+- 身体情况/疾病名/中药方子/舌苔/脉象问题：先打开 `clinical-intake-workflow.md`，再运行 `python scripts/search_references.py <症状 疾病名 方名 舌苔 脉象>` 做跨资料检索。
 - 症状问题：先 `symptom-index.md`，再 `six-channel.md`，最后 `formula-patterns.md`。
 - 白话问题：先 `beginner-questions.md`，把普通话问题转成分水岭，再进入症状/六经/方证模块。
 - 方剂问题：先 `formula-patterns.md`，必要时回到 `six-channel.md` 看病机层次。

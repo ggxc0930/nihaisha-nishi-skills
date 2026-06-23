@@ -1,6 +1,6 @@
 ---
 name: nihaisha
-description: Use this skill when the user asks about Ni Haisha / 倪海厦 TCM course material, especially Shang Han Lun / 伤寒论, Jingui / 金匮要略, Zhongjing Xinfa / 仲景心法, clinical cases / 临床案例 / 倪师医案, Bagang Bianzheng / 八纲辨证, Fuyang Forum / 扶阳论坛, Yijinjing / 易筋经, Liang Dong dialogue / 梁冬对话倪师, Stanford lecture / 斯坦福大学演讲, Tianji / 天纪 / 易经 / 阳宅 / 紫微斗数, Huangdi Neijing / 黄帝内经, Shennong Bencao / 神农本草, acupuncture / 针灸, meridians, acupoints, local resource inventory/search, six-channel pattern identification, symptom-to-formula routing, formula comparison, lesson review, board/PPT screenshot evidence, or course-derived study notes. This skill is for educational distillation and study support only, not medical diagnosis, prescriptions, dosage, or individualized treatment.
+description: Use this skill when the user asks about Ni Haisha / 倪海厦 TCM course material, especially Shang Han Lun / 伤寒论, Jingui / 金匮要略, Zhongjing Xinfa / 仲景心法, clinical cases / 临床案例 / 倪师医案, Bagang Bianzheng / 八纲辨证, Fuyang Forum / 扶阳论坛, Yijinjing / 易筋经, Liang Dong dialogue / 梁冬对话倪师, Stanford lecture / 斯坦福大学演讲, Tianji / 天纪 / 易经 / 阳宅 / 紫微斗数, Huangdi Neijing / 黄帝内经, Shennong Bencao / 神农本草, acupuncture / 针灸, meridians, acupoints, user symptom intake, disease-name lookup, Chinese herbal formula review, tongue-coating or pulse-description routing, local resource inventory/search, six-channel pattern identification, symptom-to-formula routing, formula comparison, lesson review, board/PPT screenshot evidence, or course-derived study notes. This skill is for educational distillation and study support only, not medical diagnosis, prescriptions, dosage, or individualized treatment.
 ---
 
 # Nihaisha 中医课程资料
@@ -17,6 +17,7 @@ This skill is educational. Do not present content as diagnosis, prescription, or
 2. Open `references/index.md` first, then load only the relevant module:
    - Local resource inventory / 本地资料库 questions: if `references/local-resource-inventory.md` exists locally, open it, then use `python scripts/search_local_resources.py <query terms...>` to locate files. If it does not exist, read `references/local-resource-inventory.example.md` and ask the user to run `python scripts/index_local_resources.py --source <local resource folder>`. Treat local videos, ebooks, scans, handouts, and archives as metadata-only unless the user confirms publication rights for a specific file.
    - Full local distillation / 全量蒸馏 questions: open `references/full-distillation-workflow.md`; use `scripts/build_distillation_plan.py`, `scripts/extract_text_corpus.py`, and `scripts/build_distilled_reference.py` for local batch processing.
+   - User body condition / disease / formula / tongue / pulse intake: open `references/clinical-intake-workflow.md`, then run `python scripts/search_references.py <symptoms disease formula tongue pulse terms...>` before loading the specific modules.
    - User-facing learning entry: `references/learning-entry.md`.
    - Beginner/plain-language questions: `references/beginner-questions.md`.
    - Detailed scenario routing: `references/usage-scenarios.md`.
@@ -47,10 +48,12 @@ This skill is educational. Do not present content as diagnosis, prescription, or
    - Audio collection / 倪师音频合集 / MP3 / 录音 questions: `references/audio-collection.md`; use to map local audio files to already-distilled course modules.
    - Course overview or older all-in-one lookup: `references/shanghanlun.md`.
    - Board/PPT/source evidence: use `python scripts/search_screenshots.py <query or terms...>` for ranked results across all screenshot evidence files. The script normalizes natural-language queries and compound terms; use `--show-terms` when checking how a query was split.
+   - Cross-reference retrieval: use `python scripts/search_references.py <query or terms...>` to find relevant chunks across all public reference modules, especially for mixed symptom + disease + formula + tongue/pulse questions.
    - Local file lookup: use `python scripts/search_local_resources.py <query or terms...>` for ranked results across the generated local index. Regenerate it with `python scripts/index_local_resources.py --source <local resource folder>` when the local source folder changes.
    - Local distillation drafts: keep `distillation-output/` private and move only reviewed learning summaries into public `references/*.md`.
 3. Answer in the structure that matches the task:
    - Symptom or case: pattern differentiation, missing evidence, possible course方证, cautions, and no personal prescription.
+   - User intake with symptoms/disease/formula/tongue/pulse: known facts, missing discriminators, course-matched possibilities, supporting/contradicting signs, reference hits, safety cautions, and no personal prescription.
    - Formula: course方证, symptom cluster, course方义, contraindications/cautions, related formulas, lesson labels.
    - Lesson study: chapter outline, key concepts, formulas, review questions, and screenshot evidence keywords.
    - Evidence request: return course, timestamp, brief note, and absolute screenshot path. Prefer results that match all important query terms. If the environment can display a local image and the user asks to see it, open the relevant screenshot path.
@@ -65,6 +68,7 @@ If the user uses plain everyday language rather than TCM terms, open `references
 
 - Always frame the content as 倪海厦课程学习 or 中医理论整理, not medical diagnosis.
 - Do not provide an individualized prescription, dosage, or instruction that a user can directly self-administer.
+- For tongue photos, describe only visible image features and limitations, then convert them into course search terms. Do not diagnose from an image.
 - Do not publish or reproduce complete course videos, ebooks, scanned books, transcripts, handouts, archives, or software from the local resource folder unless the user has separately confirmed public redistribution rights for the specific file. Prefer metadata, brief summaries, and local path references.
 - For 四逆汤辈, 附子类, 大承气汤/急下存阴, 抵当汤, 大陷胸汤, 癌症/肿瘤/阴实, pregnancy, pediatric cases, severe pain, chest pain, altered consciousness, dehydration, or other urgent signs, add a clear warning to seek professional care immediately.
 - If the user describes real symptoms, first state what information is missing before comparing course方证.
