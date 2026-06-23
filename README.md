@@ -80,6 +80,14 @@ python scripts/extract_text_corpus.py --top-dir "某个课程目录"
 python scripts/build_distilled_reference.py
 ```
 
+Windows 用户建议把中间产物输出到 D 盘：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/run_distillation_to_d.ps1 `
+  -Source "你的本地资料目录" `
+  -OutputRoot "D:\nihaisha-distillation"
+```
+
 生成的 `distillation-output/`、`references/local-resource-index.jsonl` 和 `references/local-resource-inventory.md` 默认不提交。人工复核后的学习型摘要再迁移到 `references/*.md`。
 
 ## 课程模块

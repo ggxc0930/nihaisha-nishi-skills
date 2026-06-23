@@ -11,29 +11,40 @@
 
 ## 本地全量流程
 
+Windows 下建议把中间产物写到 D 盘，避免占用 C 盘工作区：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/run_distillation_to_d.ps1 `
+  -Source "你的本地资料目录" `
+  -OutputRoot "D:\nihaisha-distillation" `
+  -Python "python"
+```
+
+如果使用 Codex bundled Python，可把 `-Python` 设置为对应 Python 路径。
+
 1. 生成私有资源索引：
 
 ```bash
-python scripts/index_local_resources.py --source "你的本地资料目录"
+python scripts/index_local_resources.py --source "你的本地资料目录" --jsonl "D:/nihaisha-distillation/distillation-output/local-resource-index.jsonl" --markdown "D:/nihaisha-distillation/distillation-output/local-resource-inventory.md"
 ```
 
 2. 生成蒸馏计划：
 
 ```bash
-python scripts/build_distillation_plan.py
+python scripts/build_distillation_plan.py --index "D:/nihaisha-distillation/distillation-output/local-resource-index.jsonl" --output "D:/nihaisha-distillation/distillation-output/distillation-plan.jsonl"
 ```
 
 3. 抽取文本语料：
 
 ```bash
-python scripts/extract_text_corpus.py --limit 100
-python scripts/extract_text_corpus.py --top-dir "某个课程目录"
+python scripts/extract_text_corpus.py --plan "D:/nihaisha-distillation/distillation-output/distillation-plan.jsonl" --output-dir "D:/nihaisha-distillation/distillation-output/extracted-text" --limit 100
+python scripts/extract_text_corpus.py --plan "D:/nihaisha-distillation/distillation-output/distillation-plan.jsonl" --output-dir "D:/nihaisha-distillation/distillation-output/extracted-text" --top-dir "某个课程目录"
 ```
 
 4. 生成蒸馏草稿：
 
 ```bash
-python scripts/build_distilled_reference.py
+python scripts/build_distilled_reference.py --input-dir "D:/nihaisha-distillation/distillation-output/extracted-text" --output-dir "D:/nihaisha-distillation/distillation-output/reference-drafts"
 ```
 
 5. 人工复核后，把适合公开的学习型摘要迁移到 `references/*.md`。
