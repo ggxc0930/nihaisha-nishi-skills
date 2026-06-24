@@ -64,7 +64,7 @@ python scripts/build_distilled_reference.py --input-dir "D:/nihaisha-distillatio
 | --- | --- |
 | PDF | 抽取文本，扫描版需要 OCR 后再进入蒸馏。 |
 | DOCX | 直接抽取段落和表格。 |
-| DOC | 先用 Word/LibreOffice 转成 DOCX 或 PDF。 |
+| DOC | 优先用 Microsoft Word COM 抽取文本；个别会卡住的旧文件用逐文件超时 runner 记录并跳过。 |
 | TXT/HTM | 直接抽取文本。 |
 | XLSX | 抽取表格文本。 |
 | 图片 | 先做文件索引；关键图可人工挑选或后续接 OCR/视觉模型。 |
@@ -88,6 +88,32 @@ python scripts/process_media_assets.py `
 该步骤不会完成语音转文字；它只生成后续转写模型需要的低码率音频和用于人工/视觉筛选的关键帧。
 
 如果 `ffmpeg` 报 `moov atom not found`，通常表示 MP4 索引损坏或文件不完整。此类文件不进入修复流程，记录为 damaged media 后跳过。
+
+## 旧版 Office 抽取
+
+本地安装 Microsoft Office 后，可处理 `.doc` 和 `.ppt` 旧版二进制文件：
+
+```powershell
+python scripts/extract_legacy_office_com.py `
+  --plan "D:\nihaisha-distillation\distillation-output\distillation-plan.jsonl" `
+  --output-dir "D:\nihaisha-distillation\distillation-output\extracted-text" `
+  --extensions ".doc,.ppt" `
+  --skip-existing
+```
+
+如果个别 `.doc` 卡住 Word，用逐文件超时 runner 续跑：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/run_legacy_office_com_to_d.ps1 `
+  -Plan "D:\nihaisha-distillation\distillation-output\distillation-plan.jsonl" `
+  -OutputDir "D:\nihaisha-distillation\distillation-output\extracted-text" `
+  -Python "C:\path\to\python.exe" `
+  -Start 0 `
+  -Limit 200 `
+  -TimeoutSeconds 45
+```
+
+`.mdb` 属于 Access 数据库文件，可能会让 Access COM 长时间挂起；默认不阻塞 DOC/PPT 文本蒸馏，可单独建立数据库导出任务。
 
 ## 发布边界
 
