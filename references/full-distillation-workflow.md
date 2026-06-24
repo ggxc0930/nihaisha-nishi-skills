@@ -41,13 +41,22 @@ python scripts/extract_text_corpus.py --plan "D:/nihaisha-distillation/distillat
 python scripts/extract_text_corpus.py --plan "D:/nihaisha-distillation/distillation-output/distillation-plan.jsonl" --output-dir "D:/nihaisha-distillation/distillation-output/extracted-text" --top-dir "某个课程目录"
 ```
 
-4. 生成蒸馏草稿：
+4. 对扫描版 PDF 做 OCR：
+
+```bash
+python -m pip install rapidocr-onnxruntime
+python scripts/ocr_scanned_pdfs.py --plan "D:/nihaisha-distillation/distillation-output/distillation-plan.jsonl" --output-dir "D:/nihaisha-distillation/distillation-output/extracted-text" --sort-by-pages --max-source-pages 80 --limit 10 --skip-existing
+```
+
+OCR 会显著慢于普通文本抽取。建议先用 `--sort-by-pages` 处理短 PDF，再逐步扩大 `--max-source-pages`；已经生成的文本可用 `--skip-existing` 跳过。
+
+5. 生成蒸馏草稿：
 
 ```bash
 python scripts/build_distilled_reference.py --input-dir "D:/nihaisha-distillation/distillation-output/extracted-text" --output-dir "D:/nihaisha-distillation/distillation-output/reference-drafts"
 ```
 
-5. 人工复核后，把适合公开的学习型摘要迁移到 `references/*.md`。
+6. 人工复核后，把适合公开的学习型摘要迁移到 `references/*.md`。
 
 ## 文件类型策略
 
@@ -77,6 +86,8 @@ python scripts/process_media_assets.py `
 ```
 
 该步骤不会完成语音转文字；它只生成后续转写模型需要的低码率音频和用于人工/视觉筛选的关键帧。
+
+如果 `ffmpeg` 报 `moov atom not found`，通常表示 MP4 索引损坏或文件不完整。此类文件不进入修复流程，记录为 damaged media 后跳过。
 
 ## 发布边界
 
